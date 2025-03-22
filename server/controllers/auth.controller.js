@@ -1,5 +1,7 @@
 const User = require('../models/user.model.js');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const errorHandler = require('../utlils/error.js'); // Ensure this is imported
 
 const signUp = async (req, res, next) => {
     const { userName, email, password } = req.body; // Extract fields from req.body
@@ -9,12 +11,12 @@ const signUp = async (req, res, next) => {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
-    const hashPassword= bcrypt.hashSync(password, 10); // Hash the password
+    const hashPassword = bcrypt.hashSync(password, 10); // Hash the password
     // Create a new user
     const newUser = new User({
         userName,
         email,
-        password : hashPassword,
+        password: hashPassword,
     });
 
     try {
@@ -25,4 +27,25 @@ const signUp = async (req, res, next) => {
     }
 };
 
-module.exports = { signUp };
+const signIn = async (req, res, next) => {
+    const { email, password } = req.body; // Extract fields from req.body
+
+    try {
+        const Validate = await User.findOne({ email }); // Find the user by email
+        if (!Validate) return next(errorHandler(401, 'User not found'));
+
+        const matchPassword = bcrypt.compareSync(password, Validate.password); // Compare the password
+        if (!matchPassword) return next(errorHandler(401, 'Invalid Credentials'));
+
+        const token = jwt.sign({ id: Validate._id }, process.env.JWT_SECRET); // Generate a JWT token
+        const { password: pass, ...rest } = Validate._doc;
+
+        res.cookie('access_token', token, { httpOnly: true, sameSite: true })
+            .status(200)
+            .json(rest);
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { signUp, signIn }; // Export the functions
