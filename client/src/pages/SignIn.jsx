@@ -2,6 +2,7 @@ import React, { use, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {useDispatch, useSelector } from 'react-redux';
 import {signInStart, signInSuccess, signInFailure} from '../redux/user/userSlice';
+import OAuth from '../components/OAuth';
 
 
 function SignIn() {
@@ -61,6 +62,7 @@ const dispatch = useDispatch();
           <button disabled={loading} type='submit' className='bg-blue-500 text-white rounded-md p-2 mt-2 hover:bg-blue-400 disabled:opacity-50'>
             {loading ? 'Loading...' : 'Sign In'}
           </button>
+          <OAuth/>
         </form>
         <div className='flex items-center mt-2 justify-center'>
           <p>Don't have an account?</p>

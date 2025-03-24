@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import OAuth from '../components/OAuth';
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -50,7 +51,7 @@ function SignUp() {
   };
 
   return (
-    <div className='flex items-center justify-center mt-14 flex-col'>
+    <div className='flex items-center justify-center mt-4 flex-col'>
       <h1 className='text-3xl font-semibold'>Sign Up</h1>
       <div className='bg-gray-100 p-4 rounded-md mt-4 w-96'>
         <form onSubmit={handleSubmit} className='flex flex-col gap-1'>
@@ -63,6 +64,7 @@ function SignUp() {
           <button disabled={loading} type='submit' className='bg-blue-500 text-white rounded-md p-2 mt-2 hover:bg-blue-400 disabled:opacity-50'>
             {loading ? 'Loading...' : 'Sign Up'}
           </button>
+          <OAuth/>
         </form>
         <div className='flex items-center mt-2 justify-center'>
           <p>Already have an account?</p>
