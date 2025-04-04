@@ -3,6 +3,7 @@ const app = express();
 require('dotenv').config();
 const mongoose = require('mongoose');
 const userRoute = require('./routers/user.route.js'); // Import user router
+const cookieParser = require('cookie-parser'); // Import cookie-parser
 const authRoute = require('./routers/auth.route.js'); // Import auth router
 
 // Connect to MongoDB
@@ -16,6 +17,7 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
