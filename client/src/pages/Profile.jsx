@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/user/userSlice';
+import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess } from '../redux/user/userSlice';
 import { toast } from 'react-toastify'; // Import toast
 
 const Profile = () => {
@@ -41,6 +41,33 @@ const Profile = () => {
     }
   };
 
+
+ const handleDeleteUser = async () => {
+  try {
+    dispatch(deleteUserStart());
+    const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${currentUser.token}`, // Add if needed
+      },
+    });
+    if (!res.ok) {
+      const errorText = await res.text(); // Handle non-JSON responses
+      throw new Error(errorText || `Request failed with status ${res.status}`);
+    }
+    const data = await res.json();
+    if (data.success === false) {
+      dispatch(deleteUserFailure(data.message));
+      toast.error(data.message);
+      return;
+    }
+    dispatch(deleteUserSuccess());
+    toast.success('User Deleted Successfully');
+  } catch (error) {
+    dispatch(deleteUserFailure(error.message));
+    toast.error(error.message);
+  }
+};
   return (
     <div className="mt-4 max-w-lg mx-auto">
       <h1 className="text-center font-bold text-xl">Profile Page</h1>
@@ -83,7 +110,7 @@ const Profile = () => {
         </button>
       </form>
       <div className="flex justify-between mt-3">
-        <span className="text-red-700 cursor-pointer">Delete account</span>
+        <span onClick={handleDeleteUser} className="text-red-700 cursor-pointer">Delete account</span>
         <span className="text-red-700 cursor-pointer">Sign Out</span>
       </div>
     </div>
