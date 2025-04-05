@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess } from '../redux/user/userSlice';
+import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess, signOutUserFailure, signOutUserStart, signOutUserSuccess } from '../redux/user/userSlice';
 import { toast } from 'react-toastify'; // Import toast
 
 const Profile = () => {
@@ -68,6 +68,25 @@ const Profile = () => {
     toast.error(error.message);
   }
 };
+
+
+const handleSignOut =async () => {
+  try {
+    dispatch(signOutUserStart());
+    const res = await fetch('/api/auth/signOut')
+    const data = await res.json();
+
+    if (data.success === false) {
+      dispatch(signOutUserFailure(data.message));
+      toast.error(data.message); // Show error toast
+      return;
+    }
+    dispatch(signOutUserSuccess());
+    toast.success('User Signed Out Successfully');
+  } catch (error) {
+    dispatch(signOutUserFailure(error.message));
+  }
+}
   return (
     <div className="mt-4 max-w-lg mx-auto">
       <h1 className="text-center font-bold text-xl">Profile Page</h1>
@@ -111,7 +130,7 @@ const Profile = () => {
       </form>
       <div className="flex justify-between mt-3">
         <span onClick={handleDeleteUser} className="text-red-700 cursor-pointer">Delete account</span>
-        <span className="text-red-700 cursor-pointer">Sign Out</span>
+        <span onClick={handleSignOut} className="text-red-700 cursor-pointer">Sign Out</span>
       </div>
     </div>
   );

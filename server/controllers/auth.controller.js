@@ -81,4 +81,17 @@ const google  = async (req, res, next) => {
 }
 
 
-module.exports = { signUp, signIn, google }; // Export the functions
+const signOut = async (req, res) => {
+    try {
+        
+        res.clearCookie('access_token');
+        res.status(200).json({ message: 'User logged out successfully' });
+        
+    } catch (error) {
+        next(error);
+
+    }
+}
+
+
+module.exports = { signUp, signIn, google, signOut }; // Export the functions
