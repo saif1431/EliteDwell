@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const userRoute = require('./routers/user.route.js'); // Import user router
 const cookieParser = require('cookie-parser'); // Import cookie-parser
 const authRoute = require('./routers/auth.route.js'); // Import auth router
+const listingRoute = require('./routers/listing.route.js'); // Import listing router
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
@@ -27,6 +28,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/user', userRoute); // Use user router
 app.use('/api/auth', authRoute); // Use auth router
+app.use('/api/listing', listingRoute); // Use auth router
 
 
 app.use((err, req,res,next) =>{
